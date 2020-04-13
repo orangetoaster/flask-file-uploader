@@ -10,6 +10,7 @@ import PIL
 from PIL import Image
 import simplejson
 import traceback
+import random
 
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory
 from flask_bootstrap import Bootstrap
@@ -40,11 +41,11 @@ def gen_file_name(filename):
     If file was exist already, rename it and return a new name
     """
 
-    i = 1
+    i = random.randint(1,1001)
     while os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
         name, extension = os.path.splitext(filename)
         filename = '%s_%s%s' % (name, str(i), extension)
-        i += 1
+        i += random.randint(1,100001)
 
     return filename
 
