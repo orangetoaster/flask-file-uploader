@@ -20,10 +20,8 @@ from lib.upload_file import uploadfile
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'hard to guess string'
 app.config['UPLOAD_FOLDER'] = 'data/'
 app.config['THUMBNAIL_FOLDER'] = 'data/thumbnail/'
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
 IGNORED_FILES = set(['.gitignore'])
 
