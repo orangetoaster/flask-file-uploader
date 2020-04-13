@@ -13,7 +13,7 @@ import traceback
 
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory
 from flask_bootstrap import Bootstrap
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 
 from lib.upload_file import uploadfile
 
@@ -61,14 +61,14 @@ def create_thumbnail(image):
         return True
 
     except:
-        print traceback.format_exc()
+        print(traceback.format_exc())
         return False
 
 
 @app.route("/upload", methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        files = request.files['file']
+        files = request.files['files[]']
 
         if files:
             filename = secure_filename(files.filename)
