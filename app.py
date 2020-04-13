@@ -25,15 +25,9 @@ app.config['UPLOAD_FOLDER'] = 'data/'
 app.config['THUMBNAIL_FOLDER'] = 'data/thumbnail/'
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
-ALLOWED_EXTENSIONS = set(['txt', 'gif', 'png', 'jpg', 'jpeg', 'bmp', 'rar', 'zip', '7zip', 'doc', 'docx'])
 IGNORED_FILES = set(['.gitignore'])
 
 bootstrap = Bootstrap(app)
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def gen_file_name(filename):
@@ -76,23 +70,19 @@ def upload():
             filename = gen_file_name(filename)
             mime_type = files.content_type
 
-            if not allowed_file(files.filename):
-                result = uploadfile(name=filename, type=mime_type, size=0, not_allowed_msg="File type not allowed")
+            # save file to disk
+            uploaded_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            files.save(uploaded_file_path)
 
-            else:
-                # save file to disk
-                uploaded_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                files.save(uploaded_file_path)
+            # create thumbnail after saving
+            if mime_type.startswith('image'):
+                create_thumbnail(filename)
 
-                # create thumbnail after saving
-                if mime_type.startswith('image'):
-                    create_thumbnail(filename)
-                
-                # get file size after saving
-                size = os.path.getsize(uploaded_file_path)
+            # get file size after saving
+            size = os.path.getsize(uploaded_file_path)
 
-                # return json for js call back
-                result = uploadfile(name=filename, type=mime_type, size=size)
+            # return json for js call back
+            result = uploadfile(name=filename, type=mime_type, size=size)
             
             return simplejson.dumps({"files": [result.get_file()]})
 
